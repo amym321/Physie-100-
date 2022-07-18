@@ -92,6 +92,7 @@
       },
       "collection": {
         "type": "collection",
+        "disabled": true,
         "settings": {
           "title": "Featured collection",
           "collection": "jlc-branded-swag",
@@ -347,6 +348,7 @@
       },
       "16581549517079f43c": {
         "type": "featured-product",
+        "disabled": true,
         "settings": {
           "featured_product": "adult-attitude-performance-wear-top",
           "show_quantity_selector": false,
