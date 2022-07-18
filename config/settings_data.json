@@ -344,6 +344,19 @@
           "heading": "You may also like",
           "show_vendor": false
         }
+      },
+      "16581549517079f43c": {
+        "type": "featured-product",
+        "settings": {
+          "featured_product": "",
+          "show_quantity_selector": false,
+          "show_vendor": false,
+          "enable_payment_button": true,
+          "show_share_buttons": true,
+          "media_size": "medium",
+          "enable_image_zoom": true,
+          "enable_video_looping": false
+        }
       }
     },
     "content_for_index": [
@@ -354,7 +367,8 @@
       "collection",
       "hero-2",
       "162207866813f55db0",
-      "image-bar"
+      "image-bar",
+      "16581549517079f43c"
     ]
   },
   "presets": {
