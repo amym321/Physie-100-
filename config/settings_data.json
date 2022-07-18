@@ -348,7 +348,7 @@
       "16581549517079f43c": {
         "type": "featured-product",
         "settings": {
-          "featured_product": "",
+          "featured_product": "adult-attitude-performance-wear-top",
           "show_quantity_selector": false,
           "show_vendor": false,
           "enable_payment_button": true,
@@ -365,10 +365,10 @@
       "1646799997169d720c",
       "16479956390e41ffd0",
       "collection",
+      "16581549517079f43c",
       "hero-2",
       "162207866813f55db0",
-      "image-bar",
-      "16581549517079f43c"
+      "image-bar"
     ]
   },
   "presets": {
