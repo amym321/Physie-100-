@@ -1,3 +1,22 @@
+{% comment %} SellersDash collect child product details {% endcomment %}
+{% assign shsd_product_details = product.metafields.sellersdash.shsdproducts %}
+{% if shsd_product_details.product_type == "shsd_parent" %}
+{% assign shsd_product_handles = product.handle %}
+{% assign shsd_product_handles = shsd_product_handles | concat: shsd_product_details.handles %}
+{% for shsd_handle in shsd_product_handles %}
+{% assign shsd_single_product = all_products[shsd_handle] %}
+{% assign shsd_product_variants = shsd_product_variants | concat: shsd_single_product.variants %}
+{% assign shsd_product_media = shsd_product_media | concat: shsd_single_product.media %}
+{% assign shsd_product_images = shsd_product_images | concat: shsd_single_product.images %}
+{% endfor %}
+{% assign shsd_product_options_with_values = shsd_product_details.options_with_values %}
+{% else %}
+{% assign shsd_product_options_with_values = product.options_with_values %}
+{% assign shsd_product_variants = product.variants %}
+{% assign shsd_product_media = product.media %}
+{% assign shsd_product_images = product.images %}
+{% endif %}
+
 <div class="product-template__container page-width"
   id="ProductSection-{{ section.id }}"
   data-section-id="{{ section.id }}"
@@ -39,7 +58,7 @@
     <div class="grid__item product-single__media-group {{ product_media_width }}{% if section.settings.media_size == 'full' %} product-single__media-group--full{% endif %}" data-product-single-media-group>
       {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
 
-      {%- for media in product.media -%}
+      {%- for media in shsd_product_media -%}
         {% include 'media', media: media, featured_media: featured_media, height: height, enable_image_zoom: enable_image_zoom, image_zoom_size: product_image_zoom_size, image_scale: product_image_scale %}
       {%- endfor -%}
 
@@ -48,7 +67,7 @@
         <img src="{{ featured_media | img_url: product_image_size, scale: product_image_scale }}" alt="{{ featured_media.alt }}" id="FeaturedMedia-{{ section.id }}" class="product-featured-media" style="max-width: {{ height }}px;">
       </noscript>
 
-      {% assign first_3d_model = product.media | where: "media_type", "model" | first %}
+      {% assign first_3d_model = shsd_product_media | where: "media_type", "model" | first %}
 
       {%- if first_3d_model -%}
         <button
@@ -64,8 +83,8 @@
       {%- endif -%}
 
 
-      {% if product.media.size > 1 %}
-        {% if product.media.size > 4 %}
+      {% if shsd_product_media.size > 1 %}
+        {% if shsd_product_media.size > 4 %}
           {%- assign enable_thumbnail_slides = true -%}
         {% endif %}
 
@@ -83,7 +102,7 @@
                 <div class="product-single__thumbnails-slider-track" data-slider-track>
               {% endif %}
 
-              {% for media in product.media %}
+              {% for media in shsd_product_media %}
                 <li class="product-single__thumbnails-item product-single__thumbnails-item--{{ section.settings.media_size }} {% if enable_thumbnail_slides == true %} product-single__thumbnails-item-slide{% endif %} js"{% if enable_thumbnail_slides == true %} data-slider-slide-index="{{ forloop.index0 }}" data-slider-item{% endif %}>
                   <a href="{{ media.preview_image | img_url: product_image_zoom_size, scale: product_image_scale }}"
                     class="text-link product-single__thumbnail product-single__thumbnail--{{ section.id }}"
@@ -163,7 +182,7 @@
 
             {% unless product.has_only_default_variant %}
               <div class="product-form__controls-group">
-                {% for option in product.options_with_values %}
+                {% for option in shsd_product_options_with_values %}
                   <div class="selector-wrapper js product-form__item">
                     <label for="SingleOptionSelector-{{ forloop.index0 }}">
                       {{ option.name }}
@@ -182,7 +201,7 @@
             {% endunless %}
 
             <select name="id" id="ProductSelect-{{ section.id }}" class="product-form__variants no-js">
-              {% for variant in product.variants %}
+              {% for variant in shsd_product_variants %}
                 <option value="{{ variant.id }}"
                   {%- if variant == current_variant %} selected="selected" {%- endif -%}
                 >
@@ -284,8 +303,22 @@
   <script type="application/json" id="ProductJson-{{ section.id }}">
     {{ product | json }}
   </script>
+
+{% if shsd_product_details.product_type == "shsd_parent" %}
+<script>
+var shsd_original_product_js = {{ product | json }};
+shsd_original_product_js["variants"] = {{shsd_product_variants | json }};
+shsd_original_product_js["options_with_values"] = {{shsd_product_options_with_values | json }};
+shsd_original_product_js["images"] = {{shsd_product_images | json }};
+shsd_original_product_js["media"] = {{shsd_product_media | json }};
+var shsd_product_json_container = "ProductJson-{{ section.id }}";
+document.getElementById(shsd_product_json_container).innerHTML = JSON.stringify(shsd_original_product_js);
+</script>
+{% endif %}
+
+
   <script type="application/json" id="ModelJson-{{ section.id }}">
-    {{ product.media | where: 'media_type', 'model' | json }}
+    {{ shsd_product_media | where: 'media_type', 'model' | json }}
   </script>
 {% endunless %}
 

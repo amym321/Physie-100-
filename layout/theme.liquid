@@ -25,9 +25,31 @@
   <link rel="preload" href="{{ 'theme.js' | asset_url }}" as="script">
   <link rel="preload" href="{{ 'lazysizes.js' | asset_url }}" as="script">
 
-  {%- if canonical_url != blank  -%}
-    <link rel="canonical" href="{{ canonical_url }}">
-  {%- endif -%}
+{% comment %} Set Cannonical to Parent on Child Products (SellersDash) {% endcomment %}
+{% assign shsd_shop_settings = shop.metafields.sellersdash.shsd_settings %}
+{%- if shsd_shop_settings.set_cannonical_on_children and template contains "product" -%}
+{%- assign shsd_product_details = product.metafields.sellersdash.shsdproducts -%}
+{% if shsd_product_details.product_type == "shsd_child" %}
+<link rel="cannonical" href="{{shop.url}}/products/{{shsd_product_details.parent_handle}}">
+{%- elsif canonical_url != blank -%}
+<link rel="canonical" href="{{ canonical_url }}">
+{%- endif -%}
+{%- else -%}
+{%- if canonical_url != blank -%}
+<link rel="canonical" href="{{ canonical_url }}">
+{%- endif -%}
+{%- endif -%}
+  
+  
+{% comment %} Redirect to parent from child if option turned on(SellersDash) {% endcomment %}
+{% assign shsd_shop_settings = shop.metafields.sellersdash.shsd_settings %}
+
+{% if shsd_shop_settings.redirect_to_parent_product and template contains "product" %}
+{%- assign shsd_product_details = product.metafields.sellersdash.shsdproducts -%}
+{% if shsd_product_details.product_type == "shsd_child" %}
+<script> window.location.href = "{{shop.url}}/products/{{shsd_product_details.parent_handle}}";</script>
+{% endif %}
+{% endif %}
 
   {%- if settings.favicon != blank -%}
     <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">

@@ -139,6 +139,9 @@
 
       <ul class="grid grid--uniform{% if collection.products_count > 0 %} grid--view-items{% endif %}">
         {% for product in collection.products %}
+        {% if product.tags contains "shsdchildproduct" %}
+        {% continue %}
+        {% endif %} 
           <li class="grid__item grid__item--{{section.id}} {{ grid_item_width }}">
             {% include 'product-card-grid', max_height: max_height, product: product, show_vendor: section.settings.show_vendor %}
           </li>
@@ -178,6 +181,9 @@
     {% else %}
       <ul class="list-view-items">
         {% for product in collection.products %}
+        {% if product.tags contains "shsdchildproduct" %}
+        {% continue %}
+        {% endif %} 
           <li class="list-view-item">
             {% include 'product-card-list', product: product, show_vendor: section.settings.show_vendor %}
           </li>
